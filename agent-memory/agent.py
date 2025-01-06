@@ -32,26 +32,66 @@ workflow.add_edge("action", "agent")
 
 graph = workflow.compile()
 
-# Pretty print each message with labels
-inputs = {"messages": [HumanMessage(content="what is the weather in the capital of the state that had the team which won the superbowl in 2018?")]}
-results = graph.invoke(inputs)
+def main():
+    try:
+        print("Welcome to the Agent conversation!")
+        print("Type 'exit', 'quit', or 'q' to end the conversation.")
 
-# Extract messages from results
-messages = results.get('messages', [])
+        while True:
+            # Get input from the user
+            user_input = input("You: ").strip()
 
-# Pretty print function
-def org_output(messages):
-    for msg in messages:
-        if isinstance(msg, HumanMessage):
-            print("\n[Human]:", msg.content)
-        elif msg.additional_kwargs.get("tool_calls"):
-            print("\n[AI - Tool Call]:")
-            print(json.dumps(msg.additional_kwargs, indent=2)) 
-        elif isinstance(msg, ToolMessage):
-            print("\n[Tool Response]:")
-            print(json.dumps(msg.artifact, indent=2))  
-        elif isinstance(msg, AIMessage):
-            print("\n[AI]:", msg.content)
+            # Exit condition
+            if user_input.lower() in ['exit', 'quit', 'q']:
+                print("Goodbye!")
+                break
+            
+            # Run the agent with the user's input
+            inputs = {"messages": [HumanMessage(content=user_input)]}  # HumanMessage object
+            results = graph.invoke(inputs)
 
-# Call pretty print
-org_output(messages)
+            # Check if `results` contains the expected data
+            if isinstance(results, dict) and 'messages' in results:
+                messages = results['messages']  # Extract messages
+                for message in messages:
+                    if hasattr(message, 'content') and isinstance(message, AIMessage):
+                        print(f"Assistant: {message.content}")
+            else:
+                print("Assistant: I couldn't process the response.")
+    
+    except Exception as e:
+        print("There was an error in the process. More info:", e)
+
+if __name__ == '__main__':
+    main()
+
+
+# # # # # # # # # # # # # # # # # # # # # #
+
+
+
+
+
+# # Pretty print each message with labels
+# inputs = {"messages": [HumanMessage(content="what is the weather in the capital of the state that had the team which won the superbowl in 2018?")]}
+# results = graph.invoke(inputs)
+
+# # Extract messages from results
+# messages = results.get('messages', [])
+
+# # Pretty print function
+# def org_output(messages):
+#     for msg in messages:
+#         if isinstance(msg, HumanMessage):
+#             print("\n[Human]:", msg.content)
+#         elif msg.additional_kwargs.get("tool_calls"):
+#             print("\n[AI - Tool Call]:")
+#             print(json.dumps(msg.additional_kwargs, indent=2)) 
+#         elif isinstance(msg, ToolMessage):
+#             print("\n[Tool Response]:")
+#             print(json.dumps(msg.artifact, indent=2))  
+#         elif isinstance(msg, AIMessage):
+#             print("\n[AI]:", msg.content)
+
+# # Call pretty print
+# org_output(messages)
