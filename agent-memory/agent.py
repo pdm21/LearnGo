@@ -64,34 +64,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-
-# # # # # # # # # # # # # # # # # # # # # #
-
-
-
-
-
-# # Pretty print each message with labels
-# inputs = {"messages": [HumanMessage(content="what is the weather in the capital of the state that had the team which won the superbowl in 2018?")]}
-# results = graph.invoke(inputs)
-
-# # Extract messages from results
-# messages = results.get('messages', [])
-
-# # Pretty print function
-# def org_output(messages):
-#     for msg in messages:
-#         if isinstance(msg, HumanMessage):
-#             print("\n[Human]:", msg.content)
-#         elif msg.additional_kwargs.get("tool_calls"):
-#             print("\n[AI - Tool Call]:")
-#             print(json.dumps(msg.additional_kwargs, indent=2)) 
-#         elif isinstance(msg, ToolMessage):
-#             print("\n[Tool Response]:")
-#             print(json.dumps(msg.artifact, indent=2))  
-#         elif isinstance(msg, AIMessage):
-#             print("\n[AI]:", msg.content)
-
-# # Call pretty print
-# org_output(messages)
