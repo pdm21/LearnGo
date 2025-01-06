@@ -13,14 +13,26 @@ class State(TypedDict):
 workflow = StateGraph(State)
 llm = ChatOpenAI(temperature=0, streaming=True)
 
+# Agent 1: chatbot 
 def chatbot(state: State):
     return {"messages": [llm.invoke(state["messages"])]}
 
+# Agent 2: 
+# take content from Agent 1, summarize it and 
+# identify key points (for potential DB store)
+def summarize_content(state: State):
+    print()
+
+# Agent 3: fetch current DB info
+# Agent 4: compare cur_DB with potential_new content
+
+# need to provide DB access for chatbot agent (for during conversation)
+
+# Defining the graph
 workflow.set_entry_point("chatbot")
 workflow.add_node("chatbot", chatbot)
 workflow.add_edge("chatbot", END)
 graph = workflow.compile()
-
 
 def stream_graph_updates(user_input: str):
     for event in graph.stream({"messages": [("user", user_input)]}):
