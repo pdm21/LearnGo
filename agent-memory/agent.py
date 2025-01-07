@@ -3,7 +3,6 @@ from langgraph.graph import StateGraph, END
 from agent.utils.nodes import call_model, should_continue, tool_node
 from agent.utils.state import AgentState
 from langchain_core.messages import HumanMessage, ToolMessage, AIMessage
-import json
 
 
 # Define the config
