@@ -3,7 +3,7 @@ from langgraph.graph import StateGraph, END
 from agent.utils.nodes import call_model, should_continue, tool_node
 from agent.utils.state import AgentState
 from langchain_core.messages import HumanMessage, ToolMessage, AIMessage
-
+from langgraph.checkpoint.memory import MemorySaver
 
 # Define the config
 class GraphConfig(TypedDict):
@@ -29,13 +29,14 @@ workflow.add_conditional_edges(
 )
 workflow.add_edge("action", "agent")
 
-graph = workflow.compile()
+memory = MemorySaver()
+graph = workflow.compile(checkpointer=memory)
 
 def main():
     try:
         print("Welcome to the Agent conversation!")
         print("Type 'exit', 'quit', or 'q' to end the conversation.")
-
+        thread_id = 0
         while True:
             # Get input from the user
             user_input = input("You: ").strip()
@@ -47,7 +48,8 @@ def main():
             
             # Run the agent with the user's input
             inputs = {"messages": [HumanMessage(content=user_input)]}  # HumanMessage object
-            results = graph.invoke(inputs)
+            results = graph.invoke(inputs, config={"configurable": {"thread_id": "1"}})
+            # results = graph.invoke(inputs, config={"configurable": {"thread_id": f"{thread_id}"}})
 
             # Check if `results` contains the expected data
             if isinstance(results, dict) and 'messages' in results:
@@ -57,6 +59,7 @@ def main():
                         print(f"Assistant: {message.content}")
             else:
                 print("Assistant: I couldn't process the response.")
+            thread_id += 1
     
     except Exception as e:
         print("There was an error in the process. More info:", e)
