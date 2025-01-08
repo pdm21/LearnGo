@@ -52,10 +52,10 @@ def main():
             # Check if `results` contains the expected data
             if isinstance(results, dict) and 'messages' in results:
                 messages = results['messages'] 
-                for message in messages:
-                    # Print out AI Message
-                    if hasattr(message, 'content') and isinstance(message, AIMessage):
-                        print(f"Assistant: {message.content}")
+                # Print out AI Message
+                last_message = messages[-1]
+                if hasattr(last_message, 'content') and isinstance(last_message, AIMessage):
+                    print(f"Assistant: {last_message.content}")
             else:
                 print("Assistant: I couldn't process the response.")
     
