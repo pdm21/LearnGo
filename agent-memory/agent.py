@@ -36,9 +36,8 @@ def main():
     try:
         print("Welcome to the Agent conversation!")
         print("Type 'exit', 'quit', or 'q' to end the conversation.")
-        thread_id = 0
         while True:
-            # Get input from the user
+            # Get input from the user and display it
             user_input = input("You: ").strip()
 
             # Exit condition
@@ -47,19 +46,18 @@ def main():
                 break
             
             # Run the agent with the user's input
-            inputs = {"messages": [HumanMessage(content=user_input)]}  # HumanMessage object
+            inputs = {"messages": [HumanMessage(content=user_input)]}  
             results = graph.invoke(inputs, config={"configurable": {"thread_id": "1"}})
-            # results = graph.invoke(inputs, config={"configurable": {"thread_id": f"{thread_id}"}})
 
             # Check if `results` contains the expected data
             if isinstance(results, dict) and 'messages' in results:
-                messages = results['messages']  # Extract messages
+                messages = results['messages'] 
                 for message in messages:
+                    # Print out AI Message
                     if hasattr(message, 'content') and isinstance(message, AIMessage):
                         print(f"Assistant: {message.content}")
             else:
                 print("Assistant: I couldn't process the response.")
-            thread_id += 1
     
     except Exception as e:
         print("There was an error in the process. More info:", e)
